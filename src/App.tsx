@@ -1,8 +1,6 @@
 import * as React from 'react';
 import './App.css';
 
-import logo from './logo.svg';
-
 interface IState {
   data: any[],
   results: any
@@ -22,28 +20,26 @@ export default class App extends React.Component<{}, IState> {
   }
 
   public getData() {
-    fetch("https://ghibliapi.herokuapp.com/films?title=Castle%20in%20the%20Sky", {
+    fetch("https://api.weatherbit.io/v2.0/forecast/hourly?key=a539bf89da9a40c0ae97ebb30d5e34a3&city=Auckland", {
       method: "GET",
       headers: {
         "content-Type": "text/plain",
       }
     })
     .then((response: any) => {
+      if (!response.ok) {
+        this.setState({results: response.statusText});
+      }
+      else {
+        this.setState({results: response.statusText});
+      }
       return response.json();
     })
     .then((data: any) => {
-      for (const element of data) {
-        const title = element.title;
-        document.getElementById("test")!.innerHTML += title;
-        console.log(title);
-      }
+      const dataInfo = data.city_name;
+      document.getElementById("test")!.innerHTML += dataInfo;
+      console.log(dataInfo);
     } );
-    //   if (!response.ok) {
-    //     this.setState({results: response.statusText})
-    //   }
-    //   else {
-    //     response.json().
-    //   }
   }
   
 
@@ -51,14 +47,13 @@ export default class App extends React.Component<{}, IState> {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Weather Forecast</h1>
         </header>
         <p className="App-intro">
           Hello World!
         </p>
-        <p>Test output</p>
-        <p id="test"/>
+        <p id="test">Test output: <br/></p>
+        <p>Response Status: {this.state.results}</p>
       </div>
     );
   }
