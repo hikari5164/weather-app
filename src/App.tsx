@@ -53,6 +53,7 @@ export default class App extends React.Component<{}, IState> {
         console.log("if block");
       }
       else {
+        this.setState({results: ""});
         return response.json();
       }
     })
@@ -68,24 +69,38 @@ export default class App extends React.Component<{}, IState> {
           tomorrowUrl: "https://www.weatherbit.io/static/img/icons/" + weatherData[1].weather.icon + ".png"
         });
       }
-      // this.setState({weatherInfo: data});
-      console.log(".then test: ", this.state.tomorrowDesc);
+      this.updateContent();
     } );
+  }
+
+  public updateContent() {
+    if (this.state.results !== "Error: Incorrect city name") {
+      document.getElementById("forecast-city")!.innerHTML = "Weather forecast for " + this.state.inputCity;
+      document.getElementById("header-today")!.innerHTML = "Weather forecast for today";
+      document.getElementById("header-tomorrow")!.innerHTML = "Weather forecast for tomorrow";
+
+      document.getElementById("forecast-div")!.style.border = "black solid 1px";
+
+
+      // document.getElementById("forecast-city")!.innerHTML = "";
+      // document.getElementById("header-today")!.innerHTML = "";
+      // document.getElementById("header-tomorrow")!.innerHTML = "";
+      // document.getElementById("forecast-div")!.style.border = "white";
+      // document.getElementById("image-today")!.style.display = "none";
+      // document.getElementById("image-tomorrow")!.style.display = "none";
+      // document.getElementById("desc-today")!.style.display = "none";
+      // document.getElementById("desc-tomorrow")!.style.display = "none";
+    }
   }
 
   public getWeatherInfo() {
     const city = this.state.inputCity;
-    // console.log("city = ", city);
-    // if (city === "") {
-    //   city = "Auckland";
-    // }
     this.getData(city);
-    // console.log("getWeattherInfo test: ", this.state.weatherInfo);
-    // const test = this.state.weatherInfo.data.data[0].weather.icon;
   }
   
   public handleClick() {
     this.getWeatherInfo();
+    
   }
 
   public handleChange(event: any) {
@@ -110,20 +125,21 @@ export default class App extends React.Component<{}, IState> {
             
           </div>
           
-           <p id="error">{this.state.results}</p>
+          <p id="error">{this.state.results}</p>
 
-            <div className="forecast">
-              <div className="forecast-css">
-                <h3>Weather forecast for today</h3>
-                <img src={this.state.todayUrl}/>
-                <p>{this.state.todayDesc}</p>
-              </div>
-              <div className="forecast-css">
-                <h3>Weather forecast for tomorrow</h3>
-                <img src={this.state.tomorrowUrl} />
-                <p>{this.state.tomorrowDesc}</p>
-              </div>
+          <div id="forecast-div" className="forecast">
+            <h2 id="forecast-city"/>
+            <div className="forecast-css">
+              <h3 id="header-today"/>
+              <img id="image-today"src={this.state.todayUrl}/>
+              <p id="desc-today">{this.state.todayDesc}</p>
             </div>
+            <div className="forecast-css">
+              <h3 id="header-tomorrow"/>
+              <img id="image-tomorrow" src={this.state.tomorrowUrl} />
+              <p id="desc-tomorrow">{this.state.tomorrowDesc}</p>
+            </div>
+          </div>
 
 
           {/* <p id="test">Test output: <br/></p> */}
