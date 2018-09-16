@@ -4,6 +4,7 @@ import * as React from 'react';
 import './App.css';
 import {Header} from './components/Header';
 
+
 interface IState {
   // weatherInfo: Response[],
   results: any,
@@ -13,7 +14,9 @@ interface IState {
   tomorrowIcon: any,
   tomorrowDesc: any,
   todayUrl: string,
-  tomorrowUrl: string
+  tomorrowUrl: string,
+  error: any
+  // weatherInfo: any[]
 }
 
 export default class App extends React.Component<{}, IState> {
@@ -28,7 +31,8 @@ export default class App extends React.Component<{}, IState> {
       tomorrowIcon: "",
       tomorrowDesc: "",
       todayUrl: "",
-      tomorrowUrl: ""
+      tomorrowUrl: "",
+      error: ""
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -44,24 +48,26 @@ export default class App extends React.Component<{}, IState> {
       }
     })
     .then((response: any) => {
-      if (!response.ok) {
-        this.setState({results: response.statusText});
+      if (response.statusText === "No Content") {
+        this.setState({results: "Error: Incorrect city name"});
+        console.log("if block");
       }
       else {
-        throw(new Error);
+        return response.json();
       }
-      return response.json();
     })
     .then((data: any) => {
-      const weatherData = data.data;
-      this.setState({
-        todayIcon: weatherData[0].weather.icon,
-        todayDesc: weatherData[0].weather.description,
-        tomorrowIcon: weatherData[1].weather.icon,
-        tomorrowDesc: weatherData[1].weather.description,
-        todayUrl: "https://www.weatherbit.io/static/img/icons/" + weatherData[0].weather.icon + ".png",
-        tomorrowUrl: "https://www.weatherbit.io/static/img/icons/" + weatherData[1].weather.icon + ".png"
-      })
+      if (this.state.results !== "Error: Incorrect city name") {
+        const weatherData = data.data;
+        this.setState({
+          todayIcon: weatherData[0].weather.icon,
+          todayDesc: weatherData[0].weather.description,
+          tomorrowIcon: weatherData[1].weather.icon,
+          tomorrowDesc: weatherData[1].weather.description,
+          todayUrl: "https://www.weatherbit.io/static/img/icons/" + weatherData[0].weather.icon + ".png",
+          tomorrowUrl: "https://www.weatherbit.io/static/img/icons/" + weatherData[1].weather.icon + ".png"
+        });
+      }
       // this.setState({weatherInfo: data});
       console.log(".then test: ", this.state.tomorrowDesc);
     } );
@@ -74,7 +80,7 @@ export default class App extends React.Component<{}, IState> {
     //   city = "Auckland";
     // }
     this.getData(city);
-    // console.log("handleClick test: ", this.state.weatherInfo);
+    // console.log("getWeattherInfo test: ", this.state.weatherInfo);
     // const test = this.state.weatherInfo.data.data[0].weather.icon;
   }
   
@@ -96,14 +102,15 @@ export default class App extends React.Component<{}, IState> {
             Look up the weather forecast for today and tomorrow! Type in a city name below to get started.
           </p>
           <div className="search">
-            <TextField 
-              label="City name"
-              onChange={this.handleChange}
-              />
-            <button onClick={this.handleClick}>Search</button>
+              <TextField 
+                label="City name"
+                onChange={this.handleChange}
+                />
+              <button onClick={this.handleClick}>Search</button>
+            
           </div>
           
-           <p>Response Status: {this.state.results}</p>
+           <p id="error">{this.state.results}</p>
 
             <div className="forecast">
               <div className="forecast-css">
