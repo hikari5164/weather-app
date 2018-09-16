@@ -40,7 +40,7 @@ export default class App extends React.Component<{}, IState> {
 
   public getData(city: any) {
     
-    const url = "https://api.weatherbit.io/v2.0/forecast/daily?key=a539bf89da9a40c0ae97ebb30d5e34a3&city=" + city;
+    const url = "https://api.weatherbit.io/v2.0/forecast/daily?key=a539bf89da9a40c0ae97ebb30d5e34a3&days=2&city=" + city;
     fetch(url, {
       method: "GET",
       headers: {
@@ -114,7 +114,7 @@ export default class App extends React.Component<{}, IState> {
         <div className="app-body">
           <h1>Welcome!</h1>
           <p className="App-intro">
-            Look up the weather forecast for today and tomorrow! Type in a city name below to get started.
+            Look up the weather forecast for today and tomorrow! Type in a city name below and click the search button to get started.
           </p>
           <div className="search">
               <TextField 
